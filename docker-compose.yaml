@@ -1,0 +1,23 @@
+version: '3.8'                        # Specify the version of the Docker Compose file format
+
+services:                               # Define the services (containers) to be run
+  mongodb:                              # Name of the first service (MongoDB database)
+    image: mongo                        # Use the official MongoDB image from Docker Hub
+    container_name: shatadal_mongo             # Set a custom name for the MongoDB container
+    ports:                              # Map ports between host and container
+      - "27017:27017"                  # Map host port 27017 to container port 27017
+    volumes:                            # Mount volumes for data persistence
+      - mongodb_data:/data/db           # Use named volume for MongoDB data storage
+
+  backend22:                            # Name of the second service (backend application)
+    image: shatadalsamui/week15.2_docker # Use the image named 'backend' (should be built or available)
+    container_name: shatadal            # Set a custom name for the backend container
+    depends_on:                         # Ensure backend starts after MongoDB
+      - mongodb                        # Wait for the 'mongodb' service to be ready
+    ports:                              # Map ports between host and container
+      - "3000:3000"                   # Map host port 3000 to container port 3000
+    environment:                        # Set environment variables for the container
+      MONGO_URL: "mongodb://shatadal_mongo:27017" # Connection string for MongoDB (using service name)
+
+volumes:                                # Define named volumes
+  mongodb_data:                         # Named volume for MongoDB data persistence
